@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "27107704072",
+    "project_id": "anfeca-controlfood",
+    "storage_bucket": "anfeca-controlfood.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27107704072:android:993edc9dc06461a57180bd",
+        "android_client_info": {
+          "package_name": "com.anfeca.controlfood"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBadfTJQrJPQQAwd_stCM70PhmMtb7NNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
