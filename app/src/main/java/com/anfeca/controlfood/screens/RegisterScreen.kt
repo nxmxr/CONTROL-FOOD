@@ -20,15 +20,16 @@ import com.anfeca.controlfood.auth.AuthUiState
 import com.anfeca.controlfood.auth.AuthViewModel
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.anfeca.controlfood.auth.AuthViewModelFactory
 import com.anfeca.controlfood.auth.DummyAuthRepository
 import androidx.compose.ui.tooling.preview.Devices
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.anfeca.controlfood.auth.AuthViewModelFactory
 import com.anfeca.controlfood.ui.theme.ControlFoodTheme
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by authViewModel.uiState.collectAsState()
 

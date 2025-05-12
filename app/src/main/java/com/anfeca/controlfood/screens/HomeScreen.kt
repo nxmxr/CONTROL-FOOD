@@ -25,16 +25,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.anfeca.controlfood.auth.AuthViewModel
+import com.anfeca.controlfood.auth.AuthViewModelFactory
+import com.anfeca.controlfood.auth.DummyAuthRepository
 import com.anfeca.controlfood.ui.theme.ControlFoodTheme
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     var selectedItem by remember { mutableStateOf(0) }
 
@@ -153,58 +156,64 @@ fun MenuScreen(navController: NavController, authViewModel: AuthViewModel) {
                     drawerContainerColor = MaterialTheme.colorScheme.surface,
                     drawerShape = MaterialTheme.shapes.extraSmall
                 ) {
-                    Text(
-                        text = "Mi perfil",
-                        modifier = Modifier.padding(16.dp)
-                    )
-
-                    Divider()
-
-                    // Espaciador para empujar el botón hacia abajo
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Button(
-                        onClick = { showDialog = true },
+                    Column (
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
-                            contentColor = MaterialTheme.colorScheme.onSecondary
-                        )
-                    ) {
+                            .weight(1f)
+                            .padding(16.dp)
+                    ){
                         Text(
-                            "Cerrar sesión",
-                            style = MaterialTheme.typography.titleMedium
+                            text = "Mi perfil",
+                            modifier = Modifier.padding(16.dp)
                         )
-                    }
 
-                    if (showDialog) {
-                        AlertDialog(
-                            onDismissRequest = { showDialog = false },
-                            title = { Text("Confirmar cierre de sesión") },
-                            text = { Text("¿Estás seguro de que quieres cerrar sesión?") },
-                            confirmButton = {
-                                Button(
-                                    onClick = {
-                                        showDialog = false
-                                        authViewModel.logout()
-                                        navController.navigate("welcome") {
-                                            popUpTo("home") { inclusive = true }
+                        Divider()
+
+                        // Espaciador para empujar el botón hacia abajo
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Button(
+                            onClick = { showDialog = true },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary,
+                                contentColor = MaterialTheme.colorScheme.onSecondary
+                            )
+                        ) {
+                            Text(
+                                "Cerrar sesión",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        if (showDialog) {
+                            AlertDialog(
+                                onDismissRequest = { showDialog = false },
+                                title = { Text("Confirmar cierre de sesión") },
+                                text = { Text("¿Estás seguro de que quieres cerrar sesión?") },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            showDialog = false
+                                            authViewModel.logout()
+                                            navController.navigate("welcome") {
+                                                popUpTo("home") { inclusive = true }
+                                            }
                                         }
+                                    ) {
+                                        Text("Sí, cerrar sesión")
                                     }
-                                ) {
-                                    Text("Sí, cerrar sesión")
+                                },
+                                dismissButton = {
+                                    Button(
+                                        onClick = { showDialog = false }
+                                    ) {
+                                        Text("Cancelar")
+                                    }
                                 }
-                            },
-                            dismissButton = {
-                                Button(
-                                    onClick = { showDialog = false }
-                                ) {
-                                    Text("Cancelar")
-                                }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
@@ -292,6 +301,7 @@ fun FavoritesScreen() {
 @Composable
 fun HomeScreenPreview() {
     ControlFoodTheme {
+        val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(DummyAuthRepository()))
         HomeScreen(navController = rememberNavController())
     }
 }
