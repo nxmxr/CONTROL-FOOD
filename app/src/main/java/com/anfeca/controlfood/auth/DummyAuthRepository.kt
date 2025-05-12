@@ -11,7 +11,7 @@ class DummyAuthRepository : AuthRepository {
 
     override fun logout() { /* No hace nada en preview */ }
 
-    override fun isLoggedIn(): Boolean = false
+    override fun isLoggedIn(): Boolean = false  // Siempre retorna false en el modo preview
 
     override fun getCurrentUserEmail(): String? = null
 }

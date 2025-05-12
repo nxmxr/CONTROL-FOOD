@@ -10,8 +10,12 @@ import com.anfeca.controlfood.auth.AuthViewModel
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "welcome") {
-        composable("splash") { SplashScreen(navController) }
+    NavHost(navController = navController, startDestination = "splash") {
+        composable("splash") {
+            val authViewModel: AuthViewModel = hiltViewModel()
+            SplashScreen(navController, authViewModel)
+        }
+
         composable("welcome") { WelcomeScreen(navController) }
 
         composable("login") {
@@ -23,7 +27,7 @@ fun AppNavigation() {
             val authViewModel: AuthViewModel = hiltViewModel()
             RegisterScreen(navController, authViewModel)
         }
-        
+
         composable("loading") { LoadingScreen(navController) }
         composable("home") { HomeScreen(navController) }
     }

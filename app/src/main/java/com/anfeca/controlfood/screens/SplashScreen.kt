@@ -16,27 +16,44 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.anfeca.controlfood.R
 import com.anfeca.controlfood.ui.theme.ControlFoodTheme
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.anfeca.controlfood.auth.AuthViewModel
 
-@Composable fun SplashScreen(navController: NavController) {
+@Composable
+fun SplashScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
     LaunchedEffect(Unit) {
         delay(2000L)
-        navController.navigate("welcome") {
-            popUpTo("splash") { inclusive = true }
+
+        // Verificar si el usuario está autenticado
+        if (authViewModel.isUserLoggedIn()) {
+            // Usuario ya autenticado, navegar a la pantalla principal
+            navController.navigate("home") {
+                popUpTo("splash") { inclusive = true }
+            }
+        } else {
+            // Usuario no autenticado, navegar a la pantalla de bienvenida
+            navController.navigate("welcome") {
+                popUpTo("splash") { inclusive = true }
+            }
         }
     }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surface
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center // Esto centra el contenido
+            contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = painterResource(id = R.drawable.controlfoodlogo),
                 contentDescription = "Logo Control Food",
                 modifier = Modifier
-                    .size(150.dp) // Tamaño adecuado
+                    .size(150.dp)
                     .padding(24.dp),
                 contentScale = ContentScale.Fit
             )
@@ -56,4 +73,3 @@ fun SplashScreenPreview() {
         SplashScreen(navController = rememberNavController())
     }
 }
-
