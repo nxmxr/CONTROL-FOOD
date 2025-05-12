@@ -52,7 +52,7 @@ val ControlFoodColors = lightColorScheme(
     surface = Color(0xFFFDFFF0),        // Superficies principales
     onSurface = Color(0xFF001E0C),      // Texto sobre superficies
 
-    surfaceVariant = Color(0xFFE7E9D5), // Contraste-fondo (listas)
+    surfaceVariant = Color(0xFFD8DACB), // Contraste-fondo (listas)
     onSurfaceVariant = Color(0xFF001E0C),
 
     // Bordes y errores

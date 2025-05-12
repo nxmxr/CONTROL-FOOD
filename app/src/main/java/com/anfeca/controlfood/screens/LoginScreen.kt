@@ -131,8 +131,7 @@ fun LoginScreen(
 
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
+                    .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary,
                     contentColor = MaterialTheme.colorScheme.onSecondary
@@ -144,7 +143,7 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             ClickableText(
                 text = AnnotatedString("¿Eres nuevo? Regístrate aquí"),

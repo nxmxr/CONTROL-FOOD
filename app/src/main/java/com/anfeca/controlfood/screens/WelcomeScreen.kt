@@ -63,7 +63,8 @@ fun WelcomeScreen(navController: NavController) {
                 onClick = { navController.navigate("login") {
                     popUpTo("welcome") { inclusive = true }
                 } },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary,
                     contentColor = MaterialTheme.colorScheme.onSecondary
@@ -71,8 +72,7 @@ fun WelcomeScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Iniciar sesión",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 

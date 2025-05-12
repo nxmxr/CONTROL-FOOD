@@ -33,6 +33,7 @@ import com.anfeca.controlfood.auth.AuthViewModel
 import com.anfeca.controlfood.auth.AuthViewModelFactory
 import com.anfeca.controlfood.auth.DummyAuthRepository
 import com.anfeca.controlfood.ui.theme.ControlFoodTheme
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun HomeScreen(
@@ -40,184 +41,124 @@ fun HomeScreen(
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
     var selectedItem by remember { mutableStateOf(0) }
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
     ControlFoodTheme {
-        Scaffold(
-            bottomBar = {
-                NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ) {
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                Icons.Filled.Home,
-                                contentDescription = "Menu"
-                            )
-                        },
-                        label = { Text("Menú") },
-                        selected = selectedItem == 0,
-                        onClick = { selectedItem = 0 },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            indicatorColor = MaterialTheme.colorScheme.onPrimary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                            unselectedTextColor = MaterialTheme.colorScheme.onPrimary
-                        )
-                    )
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                Icons.AutoMirrored.Filled.List,
-                                contentDescription = "Plans"
-                            )
-                        },
-                        label = { Text("Planes") },
-                        selected = selectedItem == 1,
-                        onClick = { selectedItem = 1 },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            indicatorColor = MaterialTheme.colorScheme.onPrimary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                            unselectedTextColor = MaterialTheme.colorScheme.onPrimary
-                        )
-                    )
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                Icons.Filled.CalendarToday,
-                                contentDescription = "Schedule"
-                            )
-                        },
-                        label = { Text("Agenda") },
-                        selected = selectedItem == 2,
-                        onClick = { selectedItem = 2 },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            indicatorColor = MaterialTheme.colorScheme.onPrimary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                            unselectedTextColor = MaterialTheme.colorScheme.onPrimary
-                        )
-                    )
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                Icons.Filled.Favorite,
-                                contentDescription = "Favorites"
-                            )
-                        },
-                        label = { Text("Favoritos") },
-                        selected = selectedItem == 3,
-                        onClick = { selectedItem = 3 },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            indicatorColor = MaterialTheme.colorScheme.onPrimary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                            unselectedTextColor = MaterialTheme.colorScheme.onPrimary
-                        )
-                    )
-                }
-
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                DrawerContent(navController, authViewModel, drawerState)
             }
-        ) { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                when (selectedItem) {
-                    0 -> MenuScreen(navController, authViewModel)
-                    1 -> MealPlansScreen()
-                    2 -> ScheduledPlansScreen()
-                    3 -> FavoritesScreen()
+        ) {
+            Scaffold(
+                bottomBar = {
+                    NavigationBar(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ) {
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    Icons.Filled.Home,
+                                    contentDescription = "Menu"
+                                )
+                            },
+                            label = { Text("Menú") },
+                            selected = selectedItem == 0,
+                            onClick = { selectedItem = 0 },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.onPrimary,
+                                unselectedIconColor = MaterialTheme.colorScheme.surfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        )
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.List,
+                                    contentDescription = "Plans"
+                                )
+                            },
+                            label = { Text("Planes") },
+                            selected = selectedItem == 1,
+                            onClick = { selectedItem = 1 },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.onPrimary,
+                                unselectedIconColor = MaterialTheme.colorScheme.surfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        )
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    Icons.Filled.CalendarToday,
+                                    contentDescription = "Schedule"
+                                )
+                            },
+                            label = { Text("Agenda") },
+                            selected = selectedItem == 2,
+                            onClick = { selectedItem = 2 },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.onPrimary,
+                                unselectedIconColor = MaterialTheme.colorScheme.surfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        )
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    Icons.Filled.Favorite,
+                                    contentDescription = "Favorites"
+                                )
+                            },
+                            label = { Text("Favoritos") },
+                            selected = selectedItem == 3,
+                            onClick = { selectedItem = 3 },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.onPrimary,
+                                unselectedIconColor = MaterialTheme.colorScheme.surfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        )
+                    }
+                }
+            ) { innerPadding ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    when (selectedItem) {
+                        0 -> MenuScreen(navController, authViewModel, drawerState, scope)
+                        1 -> MealPlansScreen()
+                        2 -> ScheduledPlansScreen()
+                        3 -> FavoritesScreen()
+                    }
                 }
             }
         }
     }
 }
 
+
 @Composable
-fun MenuScreen(navController: NavController, authViewModel: AuthViewModel) {
-    var showDialog by remember { mutableStateOf(false) }
-    ControlFoodTheme {
-        val drawerState = rememberDrawerState(DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
-        var searchText by remember { mutableStateOf("") }
-
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                ModalDrawerSheet(
-                    drawerContainerColor = MaterialTheme.colorScheme.surface,
-                    drawerShape = MaterialTheme.shapes.extraSmall
-                ) {
-                    Column (
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(16.dp)
-                    ){
-                        Text(
-                            text = "Mi perfil",
-                            modifier = Modifier.padding(16.dp)
-                        )
-
-                        Divider()
-
-                        // Espaciador para empujar el botón hacia abajo
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        Button(
-                            onClick = { showDialog = true },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondary,
-                                contentColor = MaterialTheme.colorScheme.onSecondary
-                            )
-                        ) {
-                            Text(
-                                "Cerrar sesión",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-
-                        if (showDialog) {
-                            AlertDialog(
-                                onDismissRequest = { showDialog = false },
-                                title = { Text("Confirmar cierre de sesión") },
-                                text = { Text("¿Estás seguro de que quieres cerrar sesión?") },
-                                confirmButton = {
-                                    Button(
-                                        onClick = {
-                                            showDialog = false
-                                            authViewModel.logout()
-                                            navController.navigate("welcome") {
-                                                popUpTo("home") { inclusive = true }
-                                            }
-                                        }
-                                    ) {
-                                        Text("Sí, cerrar sesión")
-                                    }
-                                },
-                                dismissButton = {
-                                    Button(
-                                        onClick = { showDialog = false }
-                                    ) {
-                                        Text("Cancelar")
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-        ) {
+fun MenuScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    drawerState: DrawerState,
+    scope: CoroutineScope
+) {
+    var searchText by remember { mutableStateOf("") }
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -272,8 +213,68 @@ fun MenuScreen(navController: NavController, authViewModel: AuthViewModel) {
                 }
             }
         }
+
+@Composable
+fun DrawerContent(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    drawerState: DrawerState
+) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    ModalDrawerSheet(
+        drawerContainerColor = MaterialTheme.colorScheme.surface,
+        drawerShape = MaterialTheme.shapes.extraSmall
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(16.dp)
+        ) {
+            Text("Mi perfil", modifier = Modifier.padding(16.dp))
+            Divider()
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = { showDialog = true },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                )
+            ) {
+                Text("Cerrar sesión", style = MaterialTheme.typography.titleMedium)
+            }
+
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = { Text("Confirmar cierre de sesión") },
+                    text = { Text("¿Estás seguro de que quieres cerrar sesión?") },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                showDialog = false
+                                authViewModel.logout()
+                                navController.navigate("welcome") {
+                                    popUpTo("home") { inclusive = true }
+                                }
+                            }
+                        ) {
+                            Text("Sí, cerrar sesión")
+                        }
+                    },
+                    dismissButton = {
+                        Button(onClick = { showDialog = false }) {
+                            Text("Cancelar")
+                        }
+                    }
+                )
+            }
+        }
     }
 }
+
 
 @Composable
 fun MealPlansScreen() {

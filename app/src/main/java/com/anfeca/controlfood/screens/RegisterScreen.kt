@@ -154,8 +154,7 @@ fun RegisterScreen(
                     }
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
+                    .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary,
                     contentColor = MaterialTheme.colorScheme.onSecondary
@@ -169,7 +168,7 @@ fun RegisterScreen(
 
             }
 
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             ClickableText(
                 text = AnnotatedString("¿Ya tienes cuenta? Inicia sesión"),
