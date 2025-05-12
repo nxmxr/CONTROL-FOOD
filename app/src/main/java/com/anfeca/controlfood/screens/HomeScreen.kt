@@ -15,12 +15,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -146,6 +143,7 @@ fun MenuScreen() {
             drawerState = drawerState,
             drawerContent = {
                 ModalDrawerSheet(
+                    drawerContainerColor = MaterialTheme.colorScheme.surface,
                     drawerShape = MaterialTheme.shapes.extraSmall
                 ) {
                     Text(

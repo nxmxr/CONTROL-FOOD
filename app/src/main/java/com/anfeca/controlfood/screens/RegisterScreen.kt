@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,81 +41,90 @@ fun RegisterScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(15.dp),
+            .fillMaxWidth()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Crear cuenta",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 20.dp)
-        )
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo electrónico") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Crear cuenta",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 20.dp)
             )
-        )
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Contraseña") },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
-                    )
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Correo electrónico") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                )
             )
-        )
 
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Confirmar contraseña") },
-            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                    Icon(
-                        imageVector = if (confirmPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription = if (confirmPasswordVisible) "Ocultar contraseña" else "Mostrar contraseña"
-                    )
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña") },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                )
             )
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Confirmar contraseña") },
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                        Icon(
+                            imageVector = if (confirmPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = if (confirmPasswordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        }
+
+
+
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+        )
 
         when (uiState) {
-            is AuthUiState.Loading -> {
-                CircularProgressIndicator()
-            }
             is AuthUiState.Error -> {
                 val errorMessage = (uiState as AuthUiState.Error).message
                 Text(errorMessage, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
             }
             is AuthUiState.Success -> {
                 LaunchedEffect(Unit) {
-                    navController.navigate("home") {
+                    navController.navigate("loading") {
                         popUpTo("register") { inclusive = true }
                     }
                 }
@@ -128,38 +136,51 @@ fun RegisterScreen(
             Text(it, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                localError = when {
-                    email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> "Todos los campos son obligatorios"
-                    password != confirmPassword -> "Las contraseñas no coinciden"
-                    else -> {
-                        authViewModel.register(email, password)
-                        null
-                    }
-                }
-            },
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary
-            )
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Crear cuenta")
+            Button(
+                onClick = {
+                    localError = when {
+                        email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> "Todos los campos son obligatorios"
+                        password != confirmPassword -> "Las contraseñas no coinciden"
+                        else -> {
+                            authViewModel.register(email, password)
+                            null
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                )
+            ) {
+                Text(
+                    "Crear cuenta",
+                    style = MaterialTheme.typography.titleMedium
+
+                )
+
+            }
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            ClickableText(
+                text = AnnotatedString("¿Ya tienes cuenta? Inicia sesión"),
+                onClick = { navController.navigate("login") {
+                    popUpTo("register") { inclusive = true }
+                } },
+                modifier = Modifier.padding(8.dp),
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
-        Spacer(modifier = Modifier.height(5.dp))
-
-        ClickableText(
-            text = AnnotatedString("¿Ya tienes cuenta? Inicia sesión"),
-            onClick = { navController.navigate("login") },
-            modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -178,7 +199,7 @@ fun RegisterScreenPreview() {
         ) {
             val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(DummyAuthRepository()))
 
-            LoginScreen(navController = rememberNavController(), authViewModel = authViewModel)
+            RegisterScreen(navController = rememberNavController(), authViewModel = authViewModel)
         }
     }
 }

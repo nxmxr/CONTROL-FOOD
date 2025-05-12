@@ -26,7 +26,6 @@ class AuthViewModel @Inject constructor(
             return
         }
 
-        _uiState.value = AuthUiState.Loading
         viewModelScope.launch {
             mutex.withLock {
                 val result = repository.login(email, password)
@@ -44,7 +43,6 @@ class AuthViewModel @Inject constructor(
             return
         }
 
-        _uiState.value = AuthUiState.Loading
         viewModelScope.launch {
             mutex.withLock {
                 val result = repository.register(email, password)

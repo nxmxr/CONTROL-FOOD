@@ -23,8 +23,7 @@ fun AppNavigation() {
             val authViewModel: AuthViewModel = hiltViewModel()
             RegisterScreen(navController, authViewModel)
         }
-
-        composable("transition") { TransitionScreen(navController) }
+        
         composable("loading") { LoadingScreen(navController) }
         composable("home") { HomeScreen(navController) }
     }

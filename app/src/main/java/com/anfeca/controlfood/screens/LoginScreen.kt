@@ -40,60 +40,65 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp),
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Iniciar sesión",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 20.dp)
-        )
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo electrónico") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Iniciar sesión",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 20.dp)
             )
-        )
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Contraseña") },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
-                    )
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Correo electrónico") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                )
             )
-        )
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña") },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         when (uiState) {
-            is AuthUiState.Loading -> {
-                CircularProgressIndicator()
-            }
             is AuthUiState.Error -> {
                 val errorMessage = (uiState as AuthUiState.Error).message
                 Text(errorMessage, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
             }
             is AuthUiState.Success -> {
                 LaunchedEffect(Unit) {
-                    navController.navigate("home") {
+                    navController.navigate("loading") {
                         popUpTo("login") { inclusive = true }
                     }
                 }
@@ -107,36 +112,50 @@ fun LoginScreen(
             Text(it, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
-            onClick = {
-                localError = if (email.isBlank() || password.isBlank()) {
-                    "Los campos no pueden estar vacíos"
-                } else {
-                    authViewModel.login(email, password)
-                    null
-                }
-            },
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary
-            )
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Iniciar sesión")
+            Button(
+                onClick = {
+                    localError = if (email.isBlank() || password.isBlank()) {
+                        "Los campos no pueden estar vacíos"
+                    } else {
+                        authViewModel.login(email, password)
+                        null
+
+                    }
+
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                )
+            ) {
+                Text(
+                    "Iniciar sesión",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            ClickableText(
+                text = AnnotatedString("¿Eres nuevo? Regístrate aquí"),
+                onClick = { navController.navigate("register") {
+                    popUpTo("login") { inclusive = true }
+                } },
+                modifier = Modifier.padding(8.dp),
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
-        Spacer(modifier = Modifier.height(5.dp))
-
-        ClickableText(
-            text = AnnotatedString("¿Eres nuevo? Regístrate aquí"),
-            onClick = { navController.navigate("register") },
-            modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 

@@ -40,22 +40,29 @@ fun WelcomeScreen(navController: NavController) {
                 contentDescription = "Logo Control Food",
                 modifier = Modifier
                     .size(150.dp)
-                    .padding(25.dp),
+                    .padding(20.dp),
                 contentScale = ContentScale.Fit
             )
             Text(
-                "Bienvenido a Control FOOD",
+                "Bienvenido a",
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Text(
+                "Control FOOD",
                 style = MaterialTheme.typography.headlineMedium
             )
         }
 
         // Contenido inferior centrado
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
-                onClick = { navController.navigate("login") },
+                onClick = { navController.navigate("login") {
+                    popUpTo("welcome") { inclusive = true }
+                } },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary,
@@ -74,10 +81,14 @@ fun WelcomeScreen(navController: NavController) {
             // Texto pulsable perfectamente centrado
             ClickableText(
                 text = AnnotatedString("¿Eres nuevo? Regístrate aquí"),
-                onClick = { navController.navigate("register") },
+                onClick = { navController.navigate("register") {
+                    popUpTo("welcome") { inclusive = true }
+                } },
                 modifier = Modifier.padding(8.dp),
                 style = MaterialTheme.typography.bodyMedium
             )
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
