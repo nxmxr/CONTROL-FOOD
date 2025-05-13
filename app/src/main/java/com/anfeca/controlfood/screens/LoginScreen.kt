@@ -1,5 +1,7 @@
 package com.anfeca.controlfood.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
@@ -24,6 +26,7 @@ import com.anfeca.controlfood.auth.AuthUiState
 import com.anfeca.controlfood.auth.AuthViewModel
 import com.anfeca.controlfood.auth.AuthViewModelFactory
 import com.anfeca.controlfood.auth.DummyAuthRepository
+import com.anfeca.controlfood.components.GoogleAuthButton
 import com.anfeca.controlfood.ui.theme.ControlFoodTheme
 
 @Composable
@@ -37,6 +40,14 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var localError by remember { mutableStateOf<String?>(null) }
+
+    // Launcher para resultados de actividad de Google Sign-In
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // Procesa el resultado y pasa los datos al viewModel
+        authViewModel.signInWithGoogle(result.data)
+    }
 
     Column(
         modifier = Modifier
@@ -104,15 +115,14 @@ fun LoginScreen(
                     }
                 }
             }
-            AuthUiState.Idle -> {
-                // No acción
+            AuthUiState.Idle, AuthUiState.AccountDeleted -> {
+                // Sin acción específica para estos estados
             }
         }
 
         localError?.let {
             Text(it, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
         }
-
 
         Column(
             modifier = Modifier
@@ -126,9 +136,7 @@ fun LoginScreen(
                     } else {
                         authViewModel.login(email, password)
                         null
-
                     }
-
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -143,7 +151,32 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Separador con texto "o"
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Divider(modifier = Modifier.weight(1f))
+                Text(
+                    text = "o",
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Divider(modifier = Modifier.weight(1f))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón de Google Sign-In
+            GoogleAuthButton(
+                text = "Continuar con Google",
+                authViewModel = authViewModel,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             ClickableText(
                 text = AnnotatedString("¿Eres nuevo? Regístrate aquí"),

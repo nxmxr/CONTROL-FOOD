@@ -1,5 +1,7 @@
 package com.anfeca.controlfood.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
@@ -24,6 +26,7 @@ import com.anfeca.controlfood.auth.DummyAuthRepository
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anfeca.controlfood.auth.AuthViewModelFactory
+import com.anfeca.controlfood.components.GoogleAuthButton
 import com.anfeca.controlfood.ui.theme.ControlFoodTheme
 
 @Composable
@@ -112,11 +115,7 @@ fun RegisterScreen(
             )
         }
 
-
-
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-        )
+        Spacer(modifier = Modifier.height(16.dp))
 
         when (uiState) {
             is AuthUiState.Error -> {
@@ -130,7 +129,7 @@ fun RegisterScreen(
                     }
                 }
             }
-            AuthUiState.Idle -> {}
+            AuthUiState.Idle, AuthUiState.AccountDeleted -> {}
         }
 
         localError?.let {
@@ -145,8 +144,10 @@ fun RegisterScreen(
             Button(
                 onClick = {
                     localError = when {
-                        email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> "Todos los campos son obligatorios"
-                        password != confirmPassword -> "Las contraseñas no coinciden"
+                        email.isBlank() || password.isBlank() || confirmPassword.isBlank() ->
+                            "Todos los campos son obligatorios"
+                        password != confirmPassword ->
+                            "Las contraseñas no coinciden"
                         else -> {
                             authViewModel.register(email, password)
                             null
@@ -163,12 +164,35 @@ fun RegisterScreen(
                 Text(
                     "Crear cuenta",
                     style = MaterialTheme.typography.titleMedium
-
                 )
-
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Separador con texto "o"
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Divider(modifier = Modifier.weight(1f))
+                Text(
+                    text = "o",
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Divider(modifier = Modifier.weight(1f))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón de Google Sign-In
+            GoogleAuthButton(
+                text = "Registrarse con Google",
+                authViewModel = authViewModel,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             ClickableText(
                 text = AnnotatedString("¿Ya tienes cuenta? Inicia sesión"),
