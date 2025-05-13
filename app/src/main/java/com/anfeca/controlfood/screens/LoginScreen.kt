@@ -151,7 +151,7 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Separador con texto "o"
             Row(
@@ -167,7 +167,7 @@ fun LoginScreen(
                 Divider(modifier = Modifier.weight(1f))
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Botón de Google Sign-In
             GoogleAuthButton(
@@ -176,7 +176,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             ClickableText(
                 text = AnnotatedString("¿Eres nuevo? Regístrate aquí"),
