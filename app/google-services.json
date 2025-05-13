@@ -12,7 +12,20 @@
           "package_name": "com.anfeca.controlfood"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "27107704072-1amcdh0asgokag8be1i8i8io05ts05jd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anfeca.controlfood",
+            "certificate_hash": "0d53aaa326c3c39b51524ba24bdb70ba50f48738"
+          }
+        },
+        {
+          "client_id": "27107704072-iq93l226fsl04f5sutbi34m9h87jndpe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCBadfTJQrJPQQAwd_stCM70PhmMtb7NNc"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27107704072-iq93l226fsl04f5sutbi34m9h87jndpe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -21,8 +21,8 @@ import com.anfeca.controlfood.auth.AuthUiState
 import com.anfeca.controlfood.auth.AuthViewModel
 import com.anfeca.controlfood.auth.AuthViewModelFactory
 import com.anfeca.controlfood.auth.DummyAuthRepository
-import com.anfeca.controlfood.components.CustomTextField
 import com.anfeca.controlfood.components.CustomButton
+import com.anfeca.controlfood.components.CustomTextField
 import com.anfeca.controlfood.components.GoogleAuthButton
 import com.anfeca.controlfood.ui.theme.ControlFoodTheme
 
@@ -35,8 +35,14 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel = 
     var confirmPassword by remember { mutableStateOf("") }
     var localError by remember { mutableStateOf<String?>(null) }
 
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        authViewModel.signInWithGoogle(result.data)
+    }
+
     Column(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -45,7 +51,11 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel = 
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Crear cuenta", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 20.dp))
+            Text(
+                text = "Crear cuenta",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 20.dp)
+            )
 
             CustomTextField(value = email, onValueChange = { email = it }, label = "Correo electrónico")
             CustomTextField(value = password, onValueChange = { password = it }, label = "Contraseña", isPassword = true)
@@ -55,22 +65,24 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel = 
         Spacer(modifier = Modifier.height(16.dp))
 
         when (uiState) {
-            is AuthUiState.Error -> Text((uiState as AuthUiState.Error).message, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
+            is AuthUiState.Error -> Text((uiState as AuthUiState.Error).message, color = Color.Red)
             is AuthUiState.Success -> LaunchedEffect(Unit) {
                 navController.navigate("loading") { popUpTo("register") { inclusive = true } }
             }
-            AuthUiState.Idle, AuthUiState.AccountDeleted -> { }
+            AuthUiState.Idle, AuthUiState.AccountDeleted -> {}
         }
 
-        localError?.let { Text(it, color = Color.Red, modifier = Modifier.padding(top = 8.dp)) }
+        localError?.let { Text(it, color = Color.Red) }
 
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             CustomButton(
-                text = "Crear cuenta",
+                text = "Registrarse",
                 onClick = {
                     localError = when {
-                        email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> "Todos los campos son obligatorios"
-                        password != confirmPassword -> "Las contraseñas no coinciden"
+                        email.isBlank() || password.isBlank() || confirmPassword.isBlank() ->
+                            "Todos los campos son obligatorios"
+                        password != confirmPassword ->
+                            "Las contraseñas no coinciden"
                         else -> {
                             authViewModel.register(email, password)
                             null
@@ -83,13 +95,20 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel = 
 
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Divider(modifier = Modifier.weight(1f))
-                Text(text = "o", modifier = Modifier.padding(horizontal = 16.dp), style = MaterialTheme.typography.bodyMedium)
+                Text("o", modifier = Modifier.padding(horizontal = 16.dp), style = MaterialTheme.typography.bodyMedium)
                 Divider(modifier = Modifier.weight(1f))
             }
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            GoogleAuthButton(text = "Registrarse con Google", authViewModel = authViewModel, modifier = Modifier.fillMaxWidth())
+            GoogleAuthButton(
+                text = "Registrarse con Google",
+                onClick = {
+                    val signInIntent = authViewModel.getGoogleSignInIntent()
+                    googleSignInLauncher.launch(signInIntent)
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -104,6 +123,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel = 
         Spacer(modifier = Modifier.height(32.dp))
     }
 }
+
 
 @Preview(
     name = "Register Screen",

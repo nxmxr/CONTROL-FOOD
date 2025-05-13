@@ -91,7 +91,15 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel = hil
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            GoogleAuthButton(text = "Continuar con Google", authViewModel = authViewModel, modifier = Modifier.fillMaxWidth())
+            GoogleAuthButton(
+                text = "Continuar con Google",
+                onClick = {
+                    val signInIntent = authViewModel.getGoogleSignInIntent()
+                    googleSignInLauncher.launch(signInIntent)
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
 
             Spacer(modifier = Modifier.height(8.dp))
 
