@@ -1,5 +1,6 @@
 package com.anfeca.controlfood.auth
 
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,6 +55,34 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun signInWithGoogle(data: Intent?) {
+        viewModelScope.launch {
+            mutex.withLock {
+                val result = repository.googleSignIn(data)
+                _uiState.value = result.fold(
+                    onSuccess = { AuthUiState.Success },
+                    onFailure = { AuthUiState.Error(it.message ?: "Error de inicio de sesión con Google") }
+                )
+            }
+        }
+    }
+
+    fun getGoogleSignInIntent(): Intent {
+        return repository.getGoogleSignInIntent()
+    }
+
+    fun deleteAccount() {
+        viewModelScope.launch {
+            mutex.withLock {
+                val result = repository.deleteAccount()
+                _uiState.value = result.fold(
+                    onSuccess = { AuthUiState.AccountDeleted },
+                    onFailure = { AuthUiState.Error(it.message ?: "Error al eliminar la cuenta") }
+                )
+            }
+        }
+    }
+
     fun logout() {
         repository.logout()
         _uiState.value = AuthUiState.Idle
@@ -61,5 +90,9 @@ class AuthViewModel @Inject constructor(
 
     fun isUserLoggedIn(): Boolean {
         return repository.isLoggedIn()
+    }
+
+    fun getCurrentUserEmail(): String? {
+        return repository.getCurrentUserEmail()
     }
 }
