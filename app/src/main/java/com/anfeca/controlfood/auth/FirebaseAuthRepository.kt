@@ -34,13 +34,15 @@ class FirebaseAuthRepository @Inject constructor(
 
     override suspend fun googleSignIn(data: Intent?): Result<Unit> {
         return try {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            val account = task.getResult(ApiException::class.java)
+            val account = GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException::class.java)
+            account.idToken ?: throw Exception("Token de Google nulo") // 👈 Validación crítica
             val credential = GoogleAuthProvider.getCredential(account.idToken, null)
             auth.signInWithCredential(credential).await()
             Result.success(Unit)
+        } catch (e: ApiException) {
+            Result.failure(Exception("Error de Google: ${e.statusCode}")) // Código 10 aparece aquí
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(Exception("Error general: ${e.message}"))
         }
     }
 

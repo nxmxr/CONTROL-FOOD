@@ -1,5 +1,7 @@
 package com.anfeca.controlfood.screens
 
+import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -37,7 +39,12 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel = hil
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        authViewModel.signInWithGoogle(result.data)
+        if (result.resultCode == Activity.RESULT_OK) {
+            authViewModel.signInWithGoogle(result.data)
+        } else {
+            // Maneja el error (ej: usuario canceló)
+            Log.e("GOOGLE_SIGN_IN", "Error: ${result.data?.getStringExtra("error")}")
+        }
     }
 
     Column(

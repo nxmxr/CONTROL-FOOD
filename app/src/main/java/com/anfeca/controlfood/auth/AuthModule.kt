@@ -34,7 +34,7 @@ object FirebaseModule {
     @Singleton
     fun provideGoogleSignInClient(@ApplicationContext context: Context): GoogleSignInClient {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("YOUR_WEB_CLIENT_ID") // Necesitarás reemplazar esto con tu propio client ID
+            .requestIdToken("27107704072-1amcdh0asgokag8be1i8i8io05ts05jd.apps.googleusercontent.com")
             .requestEmail()
             .build()
         return GoogleSignIn.getClient(context, gso)
